@@ -1,0 +1,6 @@
+# 忽略路由器端配置
+/router/key
+/router/host
+
+# 忽略服务器端配置
+/server/config.php
