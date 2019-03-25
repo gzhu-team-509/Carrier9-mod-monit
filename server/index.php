@@ -10,11 +10,19 @@ if (isset($_REQUEST['key'])) {
         return;
     }
 
+    print('Key Accepted.');
+
     $mysqli = new mysqli($GLOBALS['DB_HOST'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASS'], $GLOBALS['DB_NAME']);
 
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
         $rx = $_REQUEST['rx']; $tx = $_REQUEST['tx'];
         $sql = "INSERT INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES (CURRENT_DATE, $tx, $rx);";
+        $mysqli->query($sql);
+    }
+
+    if (isset($_REQUEST['heartbeat'])) {
+        $date = date('Y-m-d H:i:s');
+        $sql = "REPLACE INTO `status` (`name`, `value`) VALUES ('heartbeat', '$date');";
         $mysqli->query($sql);
     }
 
