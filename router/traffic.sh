@@ -8,4 +8,4 @@ KEY=`cat key | xargs`    # 获取KEY
 RX_BYTES=`cat /sys/devices/virtual/net/br-lan/statistics/rx_bytes`
 TX_BYTES=`cat /sys/devices/virtual/net/br-lan/statistics/tx_bytes`
 
-curl -s -o /dev/null "http://$HOST/?rx=$RX_BYTES&tx=$TX_BYTES&key=$KEY"
+curl -s -o /dev/null -L "http://$HOST/?rx=$RX_BYTES&tx=$TX_BYTES&key=$KEY"
