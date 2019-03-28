@@ -81,7 +81,7 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
                     backgroundColor: '#fcd337',  // 柠檬黄
                     data: [ <?php
                         print(implode(', ', array_map(function ($value) {
-                            return $value / pow(1024, 3);  // 将bytes转换成GiB
+                            return round($value / pow(1024, 3), 2);  // 将bytes转换成GiB。
                         }, $traffic_data['rx_bytes'])));
                     ?> ]
                 }, {
@@ -89,7 +89,7 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
                     backgroundColor: '#5698c3',  // 晴蓝
                     data: [ <?php
                         print(implode(', ', array_map(function ($value) {
-                            return $value / pow(1024, 3);  // 将bytes转换成GiB
+                            return round($value / pow(1024, 3), 2);  // 将bytes转换成GiB。
                         }, $traffic_data['tx_bytes'])));
                     ?> ]
                 }],
