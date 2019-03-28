@@ -11,7 +11,7 @@ require 'config.php';
 $mysqli = new mysqli($GLOBALS['DB_HOST'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASS'], $GLOBALS['DB_NAME']);
 
 
-// 验证Key
+// 如果请求中带有key字段，则尝试验证key。
 if (isset($_REQUEST['key'])) {
     if ($_REQUEST['key'] != $GLOBALS['KEY']) {
         print('Invalid Key.');
@@ -32,7 +32,7 @@ if (isset($_REQUEST['key'])) {
         $mysqli->query($sql);
     }
 
-    return;
+    return;  // 对于带有key字段的请求，在此处结束脚本，不输出html页面。
 }
 
 // 查询数据
@@ -57,8 +57,8 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
             <p id="internet-status-hint"></p>
             <script>
                 <?php 
-                    $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”
-                    $heartbeat_moment = strtotime($heartbeat_moment);  // 转换为自Unix纪元的秒数
+                    $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”。
+                    $heartbeat_moment = strtotime($heartbeat_moment);  // 转换为自Unix纪元的秒数。
                     $internet_availble = time() - $heartbeat_moment <= 100;
                     print("let internetAvailable = ".($internet_availble ? 'true' : 'false').";\n");
                 ?>
@@ -72,8 +72,8 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
             let data = {
                 labels: [ <?php 
                     print(implode(", ", array_map(function ($value) {
-                        $time_string = strftime('%m-%d', strtotime($value));  // 将年月日格式的时间修改为月日
-                        return "'$time_string'";                              // 用单引号包围日期字符串
+                        $time_string = strftime('%m-%d', strtotime($value));  // 将年月日格式的时间修改为月日。
+                        return "'$time_string'";                              // 用单引号包围日期字符串。
                     }, $traffic_data['date']))); 
                 ?> ],
                 datasets: [{
