@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * 路由器状态页面
+ */
+
+
 require 'config.php';
 
 
@@ -48,6 +53,19 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
     </head>
     <body>
         <p>Welcome to Akane313.2</p>
+        <div>
+            <p id="internet-status-hint"></p>
+            <script>
+                <?php 
+                    $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”
+                    $heartbeat_moment = strtotime($heartbeat_moment);  // 转换为自Unix纪元的秒数
+                    $internet_availble = time() - $heartbeat_moment <= 100;
+                    print("let internetAvailable = ".($internet_availble ? 'true' : 'false').";\n");
+                ?>
+                let hint = document.getElementById('internet-status-hint');
+                hint.innerHTML = `互联网状态：${internetAvailable ? '可用' : '不可用'}`;
+            </script>
+        </div>
         <canvas id="traffic-chart"></canvas>
         <script>
             let ctx = document.getElementById('traffic-chart').getContext('2d');
