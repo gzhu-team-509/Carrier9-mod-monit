@@ -49,73 +49,80 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
     <head>
         <title>Akane313.2</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" type="text/css" />
     </head>
     <body>
-        <p>Welcome to Akane313.2</p>
-        <div>
-            <p id="internet-status-hint"></p>
-            <script>
-                <?php 
-                    $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”。
-                    $heartbeat_moment = strtotime($heartbeat_moment);  // 转换为自Unix纪元的秒数。
-                    $internet_availble = time() - $heartbeat_moment <= 100;
-                    print("let internetAvailable = ".($internet_availble ? 'true' : 'false').";\n");
-                ?>
-                let hint = document.getElementById('internet-status-hint');
-                hint.innerHTML = `互联网状态：${internetAvailable ? '可用' : '不可用'}`;
-            </script>
+        <div class="container">
+            <div class="row">
+                <p calss="col-12">Welcome to Akane313.2</p>
+                <p id="internet-status-hint" class="col-12"></p>
+                <script>
+                    <?php 
+                        $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”。
+                        $heartbeat_moment = strtotime($heartbeat_moment);  // 转换为自Unix纪元的秒数。
+                        $internet_availble = time() - $heartbeat_moment <= 100;
+                        print("let internetAvailable = ".($internet_availble ? 'true' : 'false').";\n");
+                    ?>
+                    let hint = document.getElementById('internet-status-hint');
+                    hint.innerHTML = `互联网状态：${internetAvailable ? '可用' : '不可用'}`;
+                </script>
+            </div>
+            <div class="row">
+                <canvas id="traffic-chart" class="col-12"></canvas>
+                <script>
+                    let ctx = document.getElementById('traffic-chart').getContext('2d');
+                    let data = {
+                        labels: [ <?php 
+                            print(implode(", ", array_map(function ($value) {
+                                $time_string = strftime('%m-%d', strtotime($value));  // 将年月日格式的时间修改为月日。
+                                return "'$time_string'";                              // 用单引号包围日期字符串。
+                            }, $traffic_data['date']))); 
+                        ?> ],
+                        datasets: [{
+                            label: '上行流量',
+                            backgroundColor: '#fcd337',  // 柠檬黄
+                            data: [ <?php
+                                print(implode(', ', array_map(function ($value) {
+                                    return round($value / pow(1024, 3), 2);  // 将bytes转换成GiB。
+                                }, $traffic_data['rx_bytes'])));
+                            ?> ]
+                        }, {
+                            label: '下行流量',
+                            backgroundColor: '#5698c3',  // 晴蓝
+                            data: [ <?php
+                                print(implode(', ', array_map(function ($value) {
+                                    return round($value / pow(1024, 3), 2);  // 将bytes转换成GiB。
+                                }, $traffic_data['tx_bytes'])));
+                            ?> ]
+                        }],
+                    };
+                    let options = {
+                        title: {
+                            display: true,
+                            text: '过去14天内的流量统计（GiB）'
+                        },
+                        scales: {
+                            xAxes: [{
+                                stacked: true,
+                            }],
+                            yAxes: [{
+                                stacked: true,
+                            }]
+                        },
+                        tooltips: {
+                            mode: 'index'
+                        }
+                    };
+                    let chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: options
+                    });
+                </script>
+            </div>
         </div>
-        <canvas id="traffic-chart"></canvas>
-        <script>
-            let ctx = document.getElementById('traffic-chart').getContext('2d');
-            let data = {
-                labels: [ <?php 
-                    print(implode(", ", array_map(function ($value) {
-                        $time_string = strftime('%m-%d', strtotime($value));  // 将年月日格式的时间修改为月日。
-                        return "'$time_string'";                              // 用单引号包围日期字符串。
-                    }, $traffic_data['date']))); 
-                ?> ],
-                datasets: [{
-                    label: '上行流量',
-                    backgroundColor: '#fcd337',  // 柠檬黄
-                    data: [ <?php
-                        print(implode(', ', array_map(function ($value) {
-                            return round($value / pow(1024, 3), 2);  // 将bytes转换成GiB。
-                        }, $traffic_data['rx_bytes'])));
-                    ?> ]
-                }, {
-                    label: '下行流量',
-                    backgroundColor: '#5698c3',  // 晴蓝
-                    data: [ <?php
-                        print(implode(', ', array_map(function ($value) {
-                            return round($value / pow(1024, 3), 2);  // 将bytes转换成GiB。
-                        }, $traffic_data['tx_bytes'])));
-                    ?> ]
-                }],
-            };
-            let options = {
-                title: {
-                    display: true,
-                    text: '过去14天内的流量统计（GiB）'
-                },
-                scales: {
-                    xAxes: [{
-                        stacked: true,
-                    }],
-                    yAxes: [{
-                        stacked: true,
-                    }]
-                },
-                tooltips: {
-                    mode: 'index'
-                }
-            };
-            let chart = new Chart(ctx, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
-        </script>
     </body>
 </html>
