@@ -35,8 +35,8 @@ if (isset($_REQUEST['key'])) {
     return;  // 对于带有key字段的请求，在此处结束脚本，不输出html页面。
 }
 
-// 查询数据
-$traffic_records = $mysqli->query("SELECT * from `traffic` ORDER BY `date` LIMIT 14")->fetch_all(MYSQLI_ASSOC);
+// 查询最近14天内的流量数据，数据按日期升序排列。
+$traffic_records = $mysqli->query("SELECT * FROM (SELECT * FROM `traffic` ORDER BY `date` DESC LIMIT 14) AS `traffic` ORDER BY `date` ASC;")->fetch_all(MYSQLI_ASSOC);
 $traffic_data = ['date' => array(), 'tx_bytes' => array(), 'rx_bytes' => array()];
 foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
     for ($i = 0; $i < count($traffic_records); ++$i) {
