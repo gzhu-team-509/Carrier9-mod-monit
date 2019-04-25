@@ -58,16 +58,20 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
         <div class="container">
             <div class="row">
                 <p calss="col-12">Welcome to Akane313.2</p>
-                <p id="internet-status-hint" class="col-12"></p>
+                <p id="internet-status-hint" class="col-6"></p>
+                <p id="heartbeat-moment" class="col-6"></p>
                 <script>
                     <?php 
-                        $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”。
+                        $heartbeat_moment = $mysqli->query('SELECT `value` FROM `status` where `name`="heartbeat"')->fetch_row()[0];  // 形如“2019-03-27 13:17:00”。                    
                         $heartbeat_moment = strtotime($heartbeat_moment);  // 转换为自Unix纪元的秒数。
                         $internet_availble = time() - $heartbeat_moment <= 100;
                         print("let internetAvailable = ".($internet_availble ? 'true' : 'false').";\n");
                     ?>
-                    let hint = document.getElementById('internet-status-hint');
-                    hint.innerHTML = `互联网状态：${internetAvailable ? '可用' : '不可用'}`;
+                    <?php 
+                        print("let heartbeatMoment = '".strftime('%Y-%m-%d %H:%M:%S UTC', $heartbeat_moment)."';\n");
+                    ?>
+                    document.getElementById('heartbeat-moment').innerHTML = `心跳时间：${heartbeatMoment}`;
+                    document.getElementById('internet-status-hint').innerHTML = `互联网状态：${internetAvailable ? '可用' : '不可用'}`;
                 </script>
             </div>
             <div class="row">
