@@ -27,17 +27,18 @@ if (isset($_REQUEST['key'])) {
     println('Key Accepted.');
 
     // 记录心跳。
+    if (isset($_REQUEST['heartbeat']) && $_REQUEST['heartbeat']) {
+        $date = date('Y-m-d H:i:s');
+        $sql = "REPLACE INTO `status` (`name`, `value`) VALUES ('heartbeat', NOW());";
+        $mysqli->query($sql);
+       
+        println('Hearbeat updated.'."$date");
+    }
 
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
         // 记录发送流量和接受流量
         $rx = $_REQUEST['rx']; $tx = $_REQUEST['tx'];
         $sql = "INSERT INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES (CURRENT_DATE, $tx, $rx);";
-        $mysqli->query($sql);
-    }
-
-    if (isset($_REQUEST['heartbeat'])) {
-        $date = date('Y-m-d H:i:s');
-        $sql = "REPLACE INTO `status` (`name`, `value`) VALUES ('heartbeat', '$date');";
         $mysqli->query($sql);
     }
 
