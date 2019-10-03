@@ -48,7 +48,7 @@ if (isset($_REQUEST['key'])) {
         {
             $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last-rx' OR `name`='last-tx';"
             if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
-                for ($result as $line) {
+                foreach ($result as $line) {
                     if ($line['name'] == 'last-rx') {
                         $last_rx = intval($line['value']);
                     }
@@ -61,6 +61,8 @@ if (isset($_REQUEST['key'])) {
         }
         println("$last_rx $last_tx");
         
+        // 计算汇报间的RX和TX增量。
+
 
         // 获取到目前为止，今天的的RX和TX。
         $today_rx = 0;
