@@ -31,5 +31,5 @@ vi server/config.php # 配置数据库，并设置key为与router/key相同
 
 ## 运行
 
-1. 路由器端 使用crontab定期运行 `* * * * * cd path-to-Carrier9-mod-monit && sh send-message.sh`。
+1. 路由器端 使用crontab定期运行 `* * * * * cd path-to-Carrier9-mod-monit/router && sh send-message.sh`。
 2. 服务器端 配置数据库，并将脚本托放于PHP环境中。
