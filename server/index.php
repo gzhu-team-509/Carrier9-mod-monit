@@ -10,7 +10,7 @@ require 'config.php';
 
 // `println($str)`输出`$str`并附加换行符。
 function println($str) {
-    print(strval($str).'\n');
+    print(strval($str)."\n");
 }
 
 
