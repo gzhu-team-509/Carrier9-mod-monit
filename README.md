@@ -26,5 +26,10 @@ cp router/key.example router/host.example
 cp server/config.example.php server/config.php
 vi router/host       # 设置server端的HTTP位置
 vi router/key        # 设置key
-vi server/config.php # 设置key为与router/key相同
+vi server/config.php # 配置数据库，并设置key为与router/key相同
 ```
+
+## 运行
+
+1. 路由器端 使用crontab定期运行 `* * * * * cd path-to-Carrier9-mod-monit && sh send-message.sh`。
+2. 服务器端 配置数据库，并将脚本托放于PHP环境中。
