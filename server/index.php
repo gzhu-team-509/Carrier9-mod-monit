@@ -49,7 +49,8 @@ if (isset($_REQUEST['key'])) {
         $last_rx = 0;
         $last_tx = 0;
         $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last-rx' OR `name`='last-tx';";
-        if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
+        if ($result = $mysqli->query($sql)) {
+            $result = $result->fetch_all(MYSQLI_ASSOC);
             foreach ($result as $line) {
                 if ($line['name'] == 'last-rx') {
                     $last_rx = intval($line['value']);
@@ -60,7 +61,7 @@ if (isset($_REQUEST['key'])) {
             }
             $result->close();
         }
-        println("$last_rx $last_tx");
+        println("LastRX: $last_rx, LastTX: $last_tx");
         
         // 计算汇报间的RX和TX增量。
 
