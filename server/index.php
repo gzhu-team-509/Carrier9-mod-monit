@@ -58,28 +58,40 @@ if (isset($_REQUEST['key'])) {
         println("Last transmitted and received bytes: $last_rx/$last_tx");
         
         // 获取本次汇报的RX和TX。
-        $rx = intval($_REQUEST['rx']);
-        $tx = intval($_REQUEST['tx']);
-        println("Current transmitted and received bytes: $rx/$tx");
+        $now_rx = intval($_REQUEST['rx']);
+        $now_tx = intval($_REQUEST['tx']);
+        println("Current transmitted and received bytes: $now_rx/$now_tx");
 
         // 计算两次汇报间的RX和TX增量。
-        $incre_rx = $rx - $last_rx;
-        $incre_tx = $tx - $last_tx;
+        $incre_rx = $now_rx - $last_rx;
+        $incre_tx = $now_tx - $last_tx;
         println("Increment: $incre_rx/$incre_tx");
 
         // 获取到目前为止，今天的的RX和TX。
         $today_rx = 0;
         $today_tx = 0;
+        {
+            $sql = "SELECT `tx_bytes`, `rx_bytes` FROM `traffic` WHERE `date`='$date';";
+            if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
+                if (count($result) == 1) {
+                    $today_tx = intval($result[0]['tx_bytes']);
+                    $today_rx = intval($result[0]['rx_bytes']);
+                }
+            }
+        }
 
         // 更新今天的RX和TX。
-        {
+        if ($incre_rx >= 0 && $incre_tx >= 0) {
+            $today_rx += $incre_rx;
+            $today_tx += $incre_tx;
             $sql = "REPLACE INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES ('$date', '$tx', '$rx');";
             $mysqli->query($sql);
         }
+        println("Today's transmitted and received bytes: $today_tx/$today_rx");
 
         // 记录本次汇报的RX和TX。
-        $mysqli->query("REPLACE INTO `status` VALUES  ('last_rx_bytes', '$rx');");
-        $mysqli->query("REPLACE INTO `status` VALUES  ('last_tx_bytes', '$tx');");
+        $mysqli->query("REPLACE INTO `status` VALUES  ('last_rx_bytes', '$now_rx');");
+        $mysqli->query("REPLACE INTO `status` VALUES  ('last_tx_bytes', '$now_tx');");
     }
 
     return;  // 对于带有key字段的请求，在此处结束脚本，不输出html页面。
