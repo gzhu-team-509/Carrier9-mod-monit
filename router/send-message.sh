@@ -10,5 +10,5 @@ KEY=`cat key | xargs`    # 获取KEY。
 RX_BYTES=`cat /sys/devices/virtual/net/br-lan/statistics/rx_bytes`
 TX_BYTES=`cat /sys/devices/virtual/net/br-lan/statistics/tx_bytes`
 
-# 心跳并发送流量统计信息
+# 心跳并发送流量统计信息。
 curl -L "http://$HOST/?key=$KEY&rx=$RX_BYTES&tx=$TX_BYTES"
