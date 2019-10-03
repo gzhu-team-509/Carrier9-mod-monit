@@ -84,7 +84,7 @@ if (isset($_REQUEST['key'])) {
         if ($incre_rx >= 0 && $incre_tx >= 0) {
             $today_rx += $incre_rx;
             $today_tx += $incre_tx;
-            $sql = "REPLACE INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES ('$date', '$tx', '$rx');";
+            $sql = "REPLACE INTO `traffic` (`date`, `rx_bytes`, `tx_bytes`) VALUES ('$date', '$today_rx', '$today_tx');";
             $mysqli->query($sql);
         }
         println("Today's transmitted and received bytes: $today_tx/$today_rx");
