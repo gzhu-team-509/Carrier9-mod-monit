@@ -8,19 +8,28 @@
 require 'config.php';
 
 
+// `println($str)`输出`$str`并附加换行符。
+function println($str) {
+    print(strval($str).'\n');
+}
+
+
 $mysqli = new mysqli($GLOBALS['DB_HOST'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASS'], $GLOBALS['DB_NAME']);
 
 
 // 如果请求中带有key字段，则尝试验证key。
 if (isset($_REQUEST['key'])) {
     if ($_REQUEST['key'] != $GLOBALS['KEY']) {
-        print('Invalid Key.');
+        println('Invalid Key.');
         return;
     }
 
-    print('Key Accepted.');
+    println('Key Accepted.');
+
+    // 记录心跳。
 
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
+        // 记录发送流量和接受流量
         $rx = $_REQUEST['rx']; $tx = $_REQUEST['tx'];
         $sql = "INSERT INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES (CURRENT_DATE, $tx, $rx);";
         $mysqli->query($sql);
