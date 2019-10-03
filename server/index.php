@@ -38,8 +38,8 @@ if (isset($_REQUEST['key'])) {
         println('Hearbeat updated: '."$date");
     }
 
+    // 记录上行流量和下行流量。
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
-        // 记录发送流量和接受流量
         $rx = $_REQUEST['rx']; $tx = $_REQUEST['tx'];
         $sql = "INSERT INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES (CURRENT_DATE, $tx, $rx);";
         $mysqli->query($sql);
@@ -60,7 +60,7 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Akane313.2</title>
+        <title>Carrier9</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.bundle.min.js"></script>
@@ -70,7 +70,7 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
     <body>
         <div class="container">
             <div class="row">
-                <p calss="col-12">Welcome to Akane313.2</p>
+                <p calss="col-12">Welcome to Carrier9</p>
                 <p id="internet-status-hint" class="col-6"></p>
                 <p id="heartbeat-moment" class="col-6"></p>
                 <script>
