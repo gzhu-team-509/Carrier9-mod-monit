@@ -58,7 +58,7 @@ if (isset($_REQUEST['key'])) {
         // 获取本次汇报的RX和TX。
         $rx = $_REQUEST['rx'];
         $tx = $_REQUEST['tx'];
-        println("Current transmitted and received bytes: $rx/$tx")
+        println("Current transmitted and received bytes: $rx/$tx");
 
         // 计算汇报间的RX和TX增量。
 
