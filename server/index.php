@@ -8,10 +8,6 @@
 require 'config.php';
 
 
-// 设置时区
-date_default_timezone_set('Asia/Shanghai');
-
-
 // `println($str)`输出`$str`并附加换行符。
 function println($str) {
     print(strval($str)."\n");
