@@ -130,7 +130,7 @@ foreach (['date', 'tx_bytes', 'rx_bytes'] as $key) {
                         print("let internetAvailable = ".($internet_availble ? 'true' : 'false').";\n");
                     ?>
                     <?php 
-                        print("let heartbeatMoment = '".strftime('%Y-%m-%d %H:%M:%S UTC', $heartbeat_moment)."';\n");
+                        print("let heartbeatMoment = '".strftime('%Y-%m-%d %H:%M:%S', $heartbeat_moment)."';\n");
                     ?>
                     document.getElementById('heartbeat-moment').innerHTML = `心跳时间：${heartbeatMoment}`;
                     document.getElementById('internet-status-hint').innerHTML = `互联网状态：${internetAvailable ? '可用' : '不可用'}`;
