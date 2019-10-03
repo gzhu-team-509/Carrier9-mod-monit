@@ -8,6 +8,9 @@
 require 'config.php';
 
 
+date_default_timezone_set('Asia/Shanghai');
+
+
 // `println($str)`输出`$str`并附加换行符。
 function println($str) {
     print(strval($str)."\n");
@@ -29,10 +32,10 @@ if (isset($_REQUEST['key'])) {
     // 记录心跳。
     if (isset($_REQUEST['heartbeat']) && $_REQUEST['heartbeat']) {
         $date = date('Y-m-d H:i:s');
-        $sql = "REPLACE INTO `status` (`name`, `value`) VALUES ('heartbeat', NOW());";
+        $sql = "REPLACE INTO `status` (`name`, `value`) VALUES ('heartbeat', '$date');";
         $mysqli->query($sql);
        
-        println('Hearbeat updated.'."$date");
+        println('Hearbeat updated: '."$date");
     }
 
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
