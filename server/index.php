@@ -40,7 +40,34 @@ if (isset($_REQUEST['key'])) {
 
     // 记录上行流量和下行流量。
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
+        // 获取本次汇报的RX和TX。
         $rx = $_REQUEST['rx']; $tx = $_REQUEST['tx'];
+
+        // 获取上次汇报的RX和TX。
+        $last_rx = 0; $last_tx = 0;
+        {
+            $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last-rx' OR `name`='last-tx';"
+            if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
+                for ($result as $line) {
+                    if ($line['name'] == 'last-rx') {
+                        $last_rx = intval($line['value']);
+                    }
+                    if ($line['name'] == 'last-tx') {
+                        $last_tx = intval($line['value']);
+                    }
+                }
+                $result->close();
+            }
+        }
+        println("$last_rx $last_tx");
+        
+
+        // 获取到目前为止，今天的的RX和TX。
+        $today_rx = 0;
+        $today_tx = 0;
+
+        // 更新今天的RX和TX。
+
         $sql = "INSERT INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES (CURRENT_DATE, $tx, $rx);";
         $mysqli->query($sql);
     }
