@@ -42,38 +42,44 @@ if (isset($_REQUEST['key'])) {
         // 获取上次汇报的RX和TX。
         $last_rx = 0;
         $last_tx = 0;
-        $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last_rx_bytes' OR `name`='last_tx_bytes';";
-        if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
-            foreach ($result as $line) {
-                if ($line['name'] == 'last_rx_bytes') {
-                    $last_rx = intval($line['value']);
-                }
-                if ($line['name'] == 'last_tx_bytes') {
-                    $last_tx = intval($line['value']);
+        {
+            $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last_rx_bytes' OR `name`='last_tx_bytes';";
+            if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
+                foreach ($result as $line) {
+                    if ($line['name'] == 'last_rx_bytes') {
+                        $last_rx = intval($line['value']);
+                    }
+                    if ($line['name'] == 'last_tx_bytes') {
+                        $last_tx = intval($line['value']);
+                    }
                 }
             }
         }
         println("Last transmitted and received bytes: $last_rx/$last_tx");
         
         // 获取本次汇报的RX和TX。
-        $rx = $_REQUEST['rx'];
-        $tx = $_REQUEST['tx'];
+        $rx = intval($_REQUEST['rx']);
+        $tx = intval($_REQUEST['tx']);
         println("Current transmitted and received bytes: $rx/$tx");
 
-        // 计算汇报间的RX和TX增量。
-
+        // 计算两次汇报间的RX和TX增量。
+        $incre_rx = $rx - $last_rx;
+        $incre_tx = $tx - $last_tx;
+        println("Increment: $incre_rx/$incre_tx");
 
         // 获取到目前为止，今天的的RX和TX。
         $today_rx = 0;
         $today_tx = 0;
 
         // 更新今天的RX和TX。
-        $sql = "REPLACE INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES ($date , $tx, $rx);";
-        $mysqli->query($sql);
+        {
+            $sql = "REPLACE INTO `traffic` (`date`, `tx_bytes`, `rx_bytes`) VALUES ('$date', '$tx', '$rx');";
+            $mysqli->query($sql);
+        }
 
         // 记录本次汇报的RX和TX。
-        $mysqli->query("REPLACE INTO `status` VALUES  ('last_rx_bytes', $rx);");
-        $mysqli->query("REPLACE INTO `status` VALUES  ('last_tx_bytes', $tx);");
+        $mysqli->query("REPLACE INTO `status` VALUES  ('last_rx_bytes', '$rx');");
+        $mysqli->query("REPLACE INTO `status` VALUES  ('last_tx_bytes', '$tx');");
     }
 
     return;  // 对于带有key字段的请求，在此处结束脚本，不输出html页面。
