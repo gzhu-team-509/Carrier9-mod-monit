@@ -8,8 +8,7 @@
 require 'config.php';
 
 
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+// 设置时区
 date_default_timezone_set('Asia/Shanghai');
 
 
@@ -43,23 +42,23 @@ if (isset($_REQUEST['key'])) {
     // 记录上行流量和下行流量。
     if (isset($_REQUEST['rx']) && isset($_REQUEST['tx'])) {
         // 获取本次汇报的RX和TX。
-        $rx = $_REQUEST['rx']; $tx = $_REQUEST['tx'];
+        $rx = $_REQUEST['rx'];
+        $tx = $_REQUEST['tx'];
 
         // 获取上次汇报的RX和TX。
-        $last_rx = 0; $last_tx = 0;
-        {
-            $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last-rx' OR `name`='last-tx';"
-            if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
-                foreach ($result as $line) {
-                    if ($line['name'] == 'last-rx') {
-                        $last_rx = intval($line['value']);
-                    }
-                    if ($line['name'] == 'last-tx') {
-                        $last_tx = intval($line['value']);
-                    }
+        $last_rx = 0;
+        $last_tx = 0;
+        $sql = "SELECT `name`, `value` FROM `status` WHERE `name`='last-rx' OR `name`='last-tx';";
+        if ($result = $mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)) {
+            foreach ($result as $line) {
+                if ($line['name'] == 'last-rx') {
+                    $last_rx = intval($line['value']);
                 }
-                $result->close();
+                if ($line['name'] == 'last-tx') {
+                    $last_tx = intval($line['value']);
+                }
             }
+            $result->close();
         }
         println("$last_rx $last_tx");
         
